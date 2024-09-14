@@ -72,7 +72,6 @@ Please find the deployed application here: [vercel](https://resumegeneration3-2x
             ├── __pycache__/
             ├── app.py
             ├── imgs
-            ├── LICENSE
             ├── static/
             │       ├── style.css
             ├── templates/
