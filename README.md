@@ -73,6 +73,7 @@ The **LinkedIn PDF to HTML Resume Generator** is a web application that provides
             ├── templates/
             │       ├── index.html
             ├── imgs
+            ├── resources
             ├── README.md
             └── requirements.txt
 
