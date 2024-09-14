@@ -62,3 +62,60 @@ The **LinkedIn PDF to HTML Resume Generator** is a web application that provides
 
 5. **Access the Application**:
     Open your web browser and navigate to http://127.0.0.1:5000/ to use the application.
+
+### **File Structure**
+
+        .
+        └── LinkedIn Profile to HTML Resume Generator/
+            ├── app.py
+            ├── static/
+            │       ├── style.css
+            ├── templates/
+            │       ├── index.html
+            ├── imgs
+            ├── README.md
+            └── requirements.txt
+
+## Usage
+
+### Home Page:
+- Upload a LinkedIn profile PDF.
+- Enter your OpenAI API key.
+- Optionally, upload a job description PDF to tailor the resume.
+
+![home](imgs/home.png)
+
+### Generate Resume:
+- After uploading the necessary files, the app processes the data, extracts text from the PDFs, and uses AI to generate the resume.
+
+![home](imgs/profile.png)
+
+### Download Resume:
+- Once the resume is generated, you can download the HTML file.
+
+![eg](imgs/eg.png)
+
+You can find the html resume [here](./resources/resume.html).
+
+## Code Structure
+
+- **`app.py`**: The main application file that handles the routing and business logic.
+  - **`/` (Home Route)**: Handles the PDF upload and resume generation process.
+  - **`/download/<filename>` (Download Route)**: Provides the generated resume for download.
+
+- **Text Extraction**: Uses PyMuPDF (`fitz`) to extract text from uploaded PDF files.
+
+- **Resume Generation**: Leverages OpenAI's GPT-4 API to generate an ATS-friendly resume in HTML. If OpenAI is unavailable, the app switches to Llama using the Groq client.
+
+## Dependencies
+
+- **Flask**: For web framework and routing.
+- **PyMuPDF (Fitz)**: For extracting text from LinkedIn PDFs.
+- **OpenAI**: For generating HTML-based resumes using GPT-4.
+- **Groq (Llama)**: For fallback when OpenAI API is unavailable.
+- **transformers**: For integrating with Llama models.
+
+## Error Handling
+
+- If the OpenAI API call fails, the application automatically switches to using Llama via Groq API.
+- Errors related to file handling and API calls are logged, and user-friendly error messages are displayed.
