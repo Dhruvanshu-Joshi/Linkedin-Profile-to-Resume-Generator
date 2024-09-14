@@ -3,7 +3,6 @@ import openai
 import fitz 
 import uuid
 from flask import Flask, render_template, request, redirect, url_for, send_file
-from transformers import pipeline
 from groq import Groq
 
 app = Flask(__name__)
@@ -16,52 +15,28 @@ if not os.path.exists(UPLOAD_FOLDER):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        # Get OpenAI API key and uploaded PDF file
         openai_api_key = request.form['api_key']
         uploaded_file = request.files['pdf_file']
-        jd_file = request.files.get('jd_file')
 
         if openai_api_key and uploaded_file:
-            unique_filename = f'resume_{uuid.uuid4().hex}.html'
+            # Save PDF file
             pdf_path = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)
             uploaded_file.save(pdf_path)
 
+            # Extract text from PDF
             extracted_text = extract_text_from_pdf(pdf_path)
 
-            jd_text = None
-            if jd_file:
-                jd_path = os.path.join(UPLOAD_FOLDER, jd_file.filename)
-                jd_file.save(jd_path)
-                jd_text = extract_text_from_pdf(jd_path)
+            # Generate HTML resume
+            html_resume = generate_html_resume(openai_api_key, extracted_text)
 
-            # # Delete any existing resume.html files
-            # for filename in os.listdir(UPLOAD_FOLDER):
-            #     if filename.startswith('resume') and filename.endswith('.html'):
-            #         os.remove(os.path.join(UPLOAD_FOLDER, filename))
-
-            # # Generate a unique filename for the new resume
-            # unique_filename = 'resume.html'
-            html_resume = generate_html_resume(openai_api_key, extracted_text, jd_text)
-            html_file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
-            
+            # Save the HTML file
+            html_file_path = os.path.join(UPLOAD_FOLDER, 'resume.html')
             with open(html_file_path, 'w') as f:
                 f.write(html_resume)
 
-            return redirect(url_for('download_resume', filename=unique_filename))
-
+            return send_file(html_file_path, as_attachment=True)
     return render_template('index.html')
-
-@app.route('/download/<filename>')
-def download_resume(filename):
-    """Endpoint to download the generated resume."""
-    file_path = os.path.join(UPLOAD_FOLDER, filename)
-    try:
-        response = send_file(file_path, as_attachment=True)
-        response.headers['Cache-Control'] = 'no-store'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-        return response
-    except FileNotFoundError:
-        return "Resume not found.", 404
 
 def extract_text_from_pdf(pdf_path):
     """Extracts text from PDF using PyMuPDF (fitz)."""
@@ -75,8 +50,8 @@ def generate_html_resume(api_key, text, jd_text=None):
     """Generate HTML resume using OpenAI API."""
     openai.api_key = api_key
 
-
-    client = Groq(api_key="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")
+    # provide your api-key
+    client = Groq(api_key="")
 
     prompt = f"""
     <instruction>
@@ -279,15 +254,15 @@ def generate_html_resume(api_key, text, jd_text=None):
         )
         return response.choices[0].message['content']
 
-    except openai.error.OpenAIError as e:
-        print(f"OpenAI API Error: {e}")
+    except:
+        print(f"OpenAI API Error")
 
         completion = client.chat.completions.create(
             model="llama3-70b-8192",
             messages=[
                 {
                     "role": "user",
-                    "content": f"You are an expert in using html. All you do is this: generate correct html code for a professional resume. You are not a conversational model in this case but an html code generator. Generate an HTML formatted resume from the following text: {text}. It is your task to generate only and only the html code and do not give anything else as the output."
+                    "content": prompt
                 }
             ],
             temperature=1,
@@ -298,10 +273,6 @@ def generate_html_resume(api_key, text, jd_text=None):
         )
 
         return completion.choices[0].message.content
-        
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
-        return "Error generating resume due to an unexpected issue."
 
 if __name__ == "__main__":
     app.run(debug=True)

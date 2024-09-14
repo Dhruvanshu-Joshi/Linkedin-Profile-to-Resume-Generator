@@ -34,36 +34,11 @@
             </div>
 
             <div class="button-container">
-                <button type="submit" class="btn primary"><i class="fas fa-cog"></i> Generate Resume</button>
+                <button type="submit" class="btn success"><i class="fas fa-cog"></i> Generate Resume</button>
             </div>
         </form>
-
-        <div class="download-section" style="display: none;" id="downloadSection">
-            <p>Resume generated successfully! You can download it now:</p>
-            <button class="btn success" id="downloadButton"><i class="fas fa-download"></i> Download Resume</button>
-        </div>
     </div>
 
-    <script>
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('form');
-            const downloadSection = document.getElementById('downloadSection');
-            const downloadButton = document.getElementById('downloadButton');
-
-            form.onsubmit = function (event) {
-                event.preventDefault();
-
-                setTimeout(() => {
-                    const generatedFilename = 'resume.html'; 
-                    downloadSection.style.display = 'block';
-
-                    downloadButton.onclick = function () {
-                        window.location.href = `{{ url_for('download_resume', filename='') }}${generatedFilename}`;
-                    };
-                }, 2000);            };
-        });
-    </script>
 </body>
 
 </html>

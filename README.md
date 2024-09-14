@@ -31,6 +31,8 @@ The **LinkedIn PDF to HTML Resume Generator** is a web application that provides
 
 ## Installation and Setup
 
+Please find the deployed application here: [vercel](https://resumegeneration3-2xafqakul-dhruvanshu-joshis-projects.vercel.app).
+
 ### Requirements
 
 - Python 3.6+
@@ -67,12 +69,14 @@ The **LinkedIn PDF to HTML Resume Generator** is a web application that provides
 
         .
         └── LinkedIn Profile to HTML Resume Generator/
+            ├── __pycache__/
             ├── app.py
+            ├── imgs
+            ├── LICENSE
             ├── static/
             │       ├── style.css
             ├── templates/
             │       ├── index.html
-            ├── imgs
             ├── resources
             ├── README.md
             └── requirements.txt
@@ -95,8 +99,11 @@ The **LinkedIn PDF to HTML Resume Generator** is a web application that provides
 - Once the resume is generated, you can download the HTML file.
 
 ![eg](imgs/eg.png)
-
 You can find the html resume [here](./resources/resume.html).
+
+![eg](imgs/eg2.png)
+
+You can find the html resume [here](./resources/resume_2.html).
 
 ## Code Structure
 
